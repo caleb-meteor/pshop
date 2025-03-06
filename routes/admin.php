@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BankController;
+use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -16,4 +17,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('orders/{order}/check', [OrderController::class, 'checkOrder']);
     Route::put('orders/{order}/delivery', [OrderController::class, 'delivery']);
     Route::resource('banks', BankController::class)->except('show');
+    Route::resource('discounts', DiscountController::class);
+    Route::put('discounts/{discount}/effect', [DiscountController::class, 'setEffect']);
 });

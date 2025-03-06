@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $order_id 订单id
@@ -43,5 +43,6 @@ class OrderProduct extends Model
         'product_id',
         'price',
         'quantity',
+        'discount_price',
     ];
 }

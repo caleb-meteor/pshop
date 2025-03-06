@@ -23,6 +23,8 @@ return new class extends Migration
             $table->dateTime('delivery_time')->nullable()->comment('发货时间');
             $table->string('remark')->default('')->comment('订单备注');
             $table->text('voucher')->nullable()->comment('支付凭证');
+            $table->decimal('reduction')->default(0)->comment('满减金额');
+            $table->json('discount')->nullable()->comment('优惠信息');
             $table->timestamps();
             $table->softDeletes();
         });

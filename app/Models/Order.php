@@ -51,6 +51,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereDeliveryTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order withoutTrashed()
+ * @method static \Database\Factories\OrderFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Order extends Model
@@ -67,12 +68,15 @@ class Order extends Model
         'payment_time',
         'delivery_remark',
         'remark',
-        'created_at'
+        'created_at',
+        'discount',
+        'reduction',
     ];
 
     protected $casts = [
         'total_amount' => 'float',
-        'voucher' => 'array'
+        'voucher' => 'array',
+        'discount' => 'json'
     ];
 
     public function products()

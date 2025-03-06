@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $product_id 商品id
@@ -27,6 +27,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductView whereViewNum($value)
  * @property string|null $ip ip
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductView whereIp($value)
+ * @property int $num 浏览量
+ * @method static \Database\Factories\ProductViewFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductView whereNum($value)
  * @mixin \Eloquent
  */
 class ProductView extends Model

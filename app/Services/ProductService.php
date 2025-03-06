@@ -8,6 +8,7 @@ use App\Models\ProductView;
 use Caleb\Practice\Service;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProductService extends Service
@@ -62,7 +63,7 @@ class ProductService extends Service
         return Product::query()->pluck('id')->map(function ($id) use ($productViews) {
             return [
                 'id'  => $id,
-                'num' => (int) ($productViews[$id]->num ?? 0)
+                'num' => (int)($productViews[$id]->num ?? 0)
             ];
         });
 
@@ -70,7 +71,7 @@ class ProductService extends Service
 
     public function statisticByDate(array $date)
     {
-        $productDateNum       = ProductView::query()
+        $productDateNum = ProductView::query()
             ->select(DB::raw('sum(num) as num, product_id, date'))
             ->groupBy('product_id', 'date')->get()
             ->keyBy(fn($item) => $item->product_id . '_' . $item->date->toDateString());
@@ -82,10 +83,58 @@ class ProductService extends Service
                 'date_num' => $dateCollection->map(function ($date) use ($productDateNum, $id) {
                     return [
                         'date' => $date->format('Y-m-d'),
-                        'num'  => (int) ($productDateNum[$id . '_' . $date->format('Y-m-d')]->num ?? 0)
+                        'num'  => (int)($productDateNum[$id . '_' . $date->format('Y-m-d')]->num ?? 0)
                     ];
                 })->toArray()
             ];
         });
+    }
+
+    public function formatPrice(Collection $products)
+    {
+        $discount = DiscountService::instance()->getEffect();
+        if (!$discount) {
+            return [$products, 0, null];
+        }
+
+        if ($discount->type === 'discount') {
+            return [$products->transform(function (Product $item) use ($discount) {
+                $item->discount_price = $item->price * ($discount->setting[$discount->type] / 100);
+                return $item;
+            }), 0, $discount];
+        }
+
+        if ($discount->type === 'full_reduction') {
+            $totalAmount = $products->sum(fn($item) => $item->price * $item['quantity']);
+            if ($totalAmount >= $discount->setting[$discount->type]['full']) {
+                return [$products, $discount->setting[$discount->type]['reduction'], $discount];
+            }
+        }
+
+        if ($discount->type === 'buy_get_free') {
+            $quantity = $products->sum('quantity');
+            $freeNum  = (int)($quantity / ($discount->setting[$discount->type]['buy'] + $discount->setting[$discount->type]['free'])) * $discount->setting[$discount->type]['free'];
+            $products = $products->sortBy('price')->values();
+            $extraProducts = collect();
+            foreach ($products as $product) {
+                if ($freeNum == 0) {
+                    break;
+                }
+
+                $availableFree = min($freeNum, $product['quantity']);
+                $freeNum -= $availableFree;
+
+                if($availableFree == $product['quantity']){
+                    $product['discount_price'] = 0;
+                }else{
+                    $product['quantity'] -= $availableFree;
+                    $extraProducts->push((clone $product)->forceFill(['quantity' => $availableFree, 'discount_price' => 0]));
+                }
+            }
+
+            return [$extraProducts->merge($products)->sortBy('id')->sortBy('price')->values(), 0, $discount];
+        }
+
+        return [$products, 0, $discount];
     }
 }

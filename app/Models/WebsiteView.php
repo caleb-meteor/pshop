@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Fluent\Concerns\Has;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string|null $date
@@ -25,6 +25,8 @@ use Illuminate\Testing\Fluent\Concerns\Has;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebsiteView whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebsiteView whereNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebsiteView whereUpdatedAt($value)
+ * @method static \Database\Factories\WebsiteViewFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebsiteView filter(\Caleb\Practice\QueryFilter $filter)
  * @mixin \Eloquent
  */
 class WebsiteView extends Model

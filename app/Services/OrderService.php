@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\OrderProduct;
 use App\Models\Product;
 use Caleb\Practice\Exceptions\PracticeAppException;
 use Caleb\Practice\QueryFilter;
 use Caleb\Practice\Service;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -26,18 +28,24 @@ class OrderService extends Service
 
     public function previewOrder(array $data)
     {
-        $products = ProductService::instance()->getProductByIds(array_column($data['products'], 'product_id'))->keyBy('id');
+        $products          = ProductService::instance()->getProductByIds(array_column($data['products'], 'product_id'));
+        $productQuantities = array_column($data['products'], 'quantity', 'product_id');
+
+        $products->transform(function (Product $item) use ($productQuantities) {
+            $item->product_id = $item->id;
+            $item->discount_price = $item->price;
+            $item->quantity       = $productQuantities[$item['id']] ?? 0;
+            return $item;
+        });
+
+        /** @var Collection $products */
+        list($products, $reduction, $discount) = ProductService::instance()->formatPrice($products);
 
         return [
-            'total_amount' => array_sum(array_map(function ($item) use ($products) {
-                /** @var Product $product */
-                $product = $products[$item['product_id']] ?? null;
-                if (!$product) {
-                    return 0;
-                }
-                return $product->price * $item['quantity'];
-            }, $data['products'] ?? [])),
+            'total_amount' => sprintf('%0.2f', round($products->sum(fn($item) => $item->discount_price * $item->quantity) - $reduction, 2)),
+            'reduction'    => $reduction,
             'products'     => $products,
+            'discount' => $discount,
         ];
     }
 
@@ -56,18 +64,16 @@ class OrderService extends Service
             $this->throwAppException('Configuration incomplete, unable to place order.');
         }
 
-        $order = Order::query()->create([
+        $orderData = $this->previewOrder($data);
+
+        $order = Order::query()->create(array_merge([
             'order_number' => date('Ymd') . substr(uniqid(), -5),
             'status'       => 'wait_payment',
-            'customer_id'      => $customerId,
+            'customer_id'  => $customerId,
             'remark'       => $data['remark'] ?? '',
-        ]);
+        ], $orderData));
 
-        $order->products()->createMany($data['products'] ?? []);
-
-        $order->total_amount = $order->products->sum(function ($item) {
-            return $item->price * $item->quantity;
-        });
+        $order->products()->createMany($orderData['products']->toArray());
 
         $order->address()->create($data['address'] ?? []);
 

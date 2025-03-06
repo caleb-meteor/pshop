@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('type')->default('')->comment('类型');
             $table->string('title')->default('')->comment('标题');
             $table->text('description')->nullable()->comment('描述');
-            $table->integer('setting')->default(0)->comment('设置');
+            $table->json('setting')->nullable()->comment('设置');
             $table->boolean('is_effect')->default(0)->comment('是否生效');
             $table->dateTime('end_time')->nullable()->comment('结束时间');
             $table->timestamps();
