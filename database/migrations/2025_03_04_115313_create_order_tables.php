@@ -31,7 +31,7 @@ return new class extends Migration
 
         Schema::create('order_products', function (Blueprint $table){
             $table->id();
-            $table->unsignedBigInteger('order_id')->default(0)->comment('订单id');
+            $table->unsignedBigInteger('order_id')->default(0)->comment('订单id')->index('idx_order_id');
             $table->unsignedBigInteger('product_id')->default(0)->comment('商品id');
             $table->decimal('price')->default(0)->comment('价格');
             $table->decimal('discount_price')->default(0)->comment('优惠');
