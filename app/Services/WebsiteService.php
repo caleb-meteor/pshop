@@ -25,10 +25,7 @@ class WebsiteService extends Service
     {
         return WebsiteView::query()
             ->when($date, fn($query) => $query->whereDate('date', $date))
-            ->select(DB::raw('sum(num) as num, ip'))
-            ->groupBy('ip')->orderByDesc('num')->limit(50)
-            ->get()
-            ->toArray();
+            ->count();
     }
 
     public function statisticByDate(array $date)
