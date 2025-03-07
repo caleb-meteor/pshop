@@ -85,13 +85,14 @@ class OrderController extends Controller
         $data = $request->validate([
             'customer_id' => 'required',
             'voucher'     => 'required|array',
+            'remark'      => 'sometimes|string|max:255'
         ]);
 
         if ($order->customer_id !== $data['customer_id']) {
             $this->throwAppException('Invalid user');
         }
 
-        OrderService::instance()->uploadOrderVoucher($order, $data['voucher']);
+        OrderService::instance()->uploadOrderVoucher($order, $data['voucher'], $data['remark'] ?? '');
 
         return $this->success();
     }

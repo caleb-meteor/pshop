@@ -88,15 +88,17 @@ class OrderService extends Service
 
     /**
      * @param Order $order
-     * @param array $vouchers
+     * @param array $voucher
+     * @param string $remark
      * @return bool
      * @author Caleb 2025/3/4
      */
-    public function uploadOrderVoucher(Order $order, array $voucher)
+    public function uploadOrderVoucher(Order $order, array $voucher, string $remark)
     {
         return $order->update([
             'voucher' => $voucher,
             'status'  => 'wait_check',
+            'remark'  => $remark
         ]);
     }
 
