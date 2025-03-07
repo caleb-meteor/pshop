@@ -99,7 +99,7 @@ class ProductService extends Service
 
         if ($discount->type === 'discount') {
             return [$products->transform(function (Product $item) use ($discount) {
-                $item->discount_price = $item->price * ($discount->setting[$discount->type] / 100);
+                $item->discount_price = sprintf('%.2f', round($item->price * ($discount->setting[$discount->type] / 100), 2));
                 return $item;
             }), 0, $discount];
         }

@@ -32,7 +32,7 @@ class OrderService extends Service
         $productQuantities = array_column($data['products'], 'quantity', 'product_id');
 
         $products->transform(function (Product $item) use ($productQuantities) {
-            $item->product_id = $item->id;
+            $item->product_id     = $item->id;
             $item->discount_price = $item->price;
             $item->quantity       = $productQuantities[$item['id']] ?? 0;
             return $item;
@@ -45,7 +45,7 @@ class OrderService extends Service
             'total_amount' => sprintf('%0.2f', round($products->sum(fn($item) => $item->discount_price * $item->quantity) - $reduction, 2)),
             'reduction'    => $reduction,
             'products'     => $products,
-            'discount' => $discount,
+            'discount'     => $discount,
         ];
     }
 
