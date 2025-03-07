@@ -100,9 +100,4 @@ class DiscountController extends Controller
         DiscountService::instance()->setDiscountEffect($discount, $data);
         return $this->success();
     }
-
-    public function getEffect()
-    {
-
-    }
 }
