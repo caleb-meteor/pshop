@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BankController;
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\StatisticController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
@@ -19,4 +20,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('banks', BankController::class)->except('show');
     Route::resource('discounts', DiscountController::class);
     Route::put('discounts/{discount}/effect', [DiscountController::class, 'setEffect']);
+    Route::get('statistic', [StatisticController::class, 'getStatistic']);
 });

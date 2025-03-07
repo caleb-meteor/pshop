@@ -21,11 +21,12 @@ class WebsiteService extends Service
         ]);
     }
 
-    public function statistic()
+    public function statistic(string $date = null)
     {
         return WebsiteView::query()
+            ->when($date, fn($query) => $query->whereDate('date', $date))
             ->select(DB::raw('sum(num) as num, ip'))
-            ->groupBy('ip')
+            ->groupBy('ip')->orderByDesc('num')->limit(50)
             ->get()
             ->toArray();
     }

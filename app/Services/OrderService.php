@@ -149,16 +149,42 @@ class OrderService extends Service
         return $order;
     }
 
-    public function statistic()
+    public function statistic(string $date = null)
     {
-        $orderNum = Order::query()->count();
+        $orderNum = Order::query()
+            ->when($date, function ($query) use ($date) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse($date)->startOfDay()->toDateTimeString(),
+                    Carbon::parse($date)->endOfDay()->toDateTimeString(),
+                ]);
+            })->count();
 
-        $data = Order::query()->select(DB::raw('sum(total_amount) as total_amount, count(*) as order_num'))->whereNotNull('payment_time')->first();
+        $data = Order::query()
+            ->select(DB::raw('sum(total_amount) as total_amount, count(*) as order_num'))
+            ->when($date, function ($query) use ($date) {
+                $query->whereBetween('payment_time', [
+                    Carbon::parse($date)->startOfDay()->toDateTimeString(),
+                    Carbon::parse($date)->endOfDay()->toDateTimeString(),
+                ]);
+            })
+            ->whereNotNull('payment_time')->first();
+
+        $waitData = Order::query()
+            ->select(DB::raw('sum(total_amount) as total_amount, count(*) as order_num'))
+            ->where('status', 'wait_check')
+            ->when($date, function ($query) use ($date) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse($date)->startOfDay()->toDateTimeString(),
+                    Carbon::parse($date)->endOfDay()->toDateTimeString(),
+                ]);
+            })->first();
 
         return [
-            'order_num'         => $orderNum,
-            'total_amount'      => $data->total_amount ?? 0,
-            'payment_order_num' => $data->order_num ?? 0,
+            'order_num'               => $orderNum,                 // 订单总数
+            'total_amount'            => $data->total_amount ?? 0,  // 已付款金额
+            'payment_order_num'       => $data->order_num ?? 0,     // 已付款订单
+            'wait_check_order_num'    => $waitData->order_num ?? 0, // 待核验订单
+            'wait_check_order_amount' => $waitData->total_amount ?? 0,  // 待核验订单金额
         ];
     }
 

@@ -57,9 +57,13 @@ class ProductService extends Service
         );
     }
 
-    public function statistic()
+    public function statistic(string $date = null)
     {
-        $productViews = ProductView::query()->select(DB::raw('sum(num) as num, product_id'))->groupBy('product_id')->get()->keyBy('product_id');
+        $productViews = ProductView::query()
+            ->select(DB::raw('sum(num) as num, product_id'))
+            ->when($date, fn($query) => $query->whereDate('date', $date))
+            ->groupBy('product_id')->get()->keyBy('product_id');
+
         return Product::query()->pluck('id')->map(function ($id) use ($productViews) {
             return [
                 'id'  => $id,

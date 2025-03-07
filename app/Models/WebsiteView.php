@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Fluent\Concerns\Has;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string|null $date
@@ -41,5 +41,6 @@ class WebsiteView extends Model
 
     protected $casts = [
         'date' => 'date',
+        'num' => 'integer',
     ];
 }
