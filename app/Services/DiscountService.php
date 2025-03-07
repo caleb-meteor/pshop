@@ -34,18 +34,23 @@ class DiscountService extends Service
         return $discount->delete();
     }
 
-    public function setDiscountEffect(Discount $discount,array $data)
+    public function setDiscountEffect(Discount $discount, array $data)
     {
         Discount::query()->update(['is_effect' => 0]);
 
-        $endTime = $data['end_time'] ?? null;
+        $endTime  = $data['end_time'] ?? null;
         $isEffect = $data['is_effect'];
 
-        return $discount->update(['is_effect' => $isEffect,'end_time' => $endTime]);
+        return $discount->update(['is_effect' => $isEffect, 'end_time' => $endTime]);
     }
 
     public function getEffect()
     {
-        return Discount::query()->where('is_effect', 1)->where('end_time', '>', now())->first();
+        return Discount::query()
+            ->where('is_effect', 1)
+            ->where(function ($query) {
+                $query->where('end_time', '>', now())->orWhereNull('end_time');
+            })
+            ->first();
     }
 }

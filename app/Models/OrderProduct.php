@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $order_id 订单id
@@ -32,6 +32,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderProduct onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderProduct withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderProduct withoutTrashed()
+ * @property string $discount_price 优惠
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OrderProduct whereDiscountPrice($value)
  * @mixin \Eloquent
  */
 class OrderProduct extends Model

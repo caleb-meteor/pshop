@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $user_id 用户id
@@ -52,6 +52,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order withoutTrashed()
  * @method static \Database\Factories\OrderFactory factory($count = null, $state = [])
+ * @property string $reduction 满减金额
+ * @property array<array-key, mixed>|null $discount 优惠信息
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereReduction($value)
  * @mixin \Eloquent
  */
 class Order extends Model

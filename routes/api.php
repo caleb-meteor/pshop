@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DiscountController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UploadController;
@@ -18,5 +19,6 @@ Route::prefix('h5')->group(function (){
     Route::post('orders', [OrderController::class, 'store']);
     Route::get('orders/{order}', [OrderController::class, 'show']);
     Route::post('orders/{order}/voucher', [OrderController::class, 'uploadOrderVoucher']);
+    Route::get('discount/effect', [DiscountController::class, 'getEffect']);
 });
 
