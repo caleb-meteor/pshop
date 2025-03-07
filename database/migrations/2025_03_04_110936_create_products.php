@@ -21,7 +21,7 @@ return new class extends Migration
         Schema::create('product_views', function (Blueprint $table){
             $table->id();
             $table->unsignedBigInteger('product_id')->comment('商品id');
-            $table->date('date')->nullable()->comment('日期')->index('date');
+            $table->date('date')->nullable()->comment('日期')->index('idx_date');
             $table->string('ip')->nullable()->comment('ip');
             $table->unsignedBigInteger('num')->default(0)->comment('浏览量');
             $table->timestamps();
