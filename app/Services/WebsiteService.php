@@ -16,9 +16,7 @@ class WebsiteService extends Service
         WebsiteView::query()->updateOrCreate([
             'ip'   => request()->ip(),
             'date' => date('Y-m-d')
-        ], [
-            'num' => DB::raw('num + ' . $num)
-        ]);
+        ])->increment('num', $num);
     }
 
     public function statistic(string $date = null)
