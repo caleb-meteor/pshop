@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('banks', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 30)->default('')->comment('银行卡持有人');
-            $table->string('card_number', 30)->default('')->comment('银行卡号');
-            $table->string('bank_name', 30)->default('')->comment('银行名称');
+            $table->string('name', 60)->default('')->comment('银行卡持有人');
+            $table->string('card_number', 60)->default('')->comment('银行卡号');
+            $table->string('bank_name', 60)->default('')->comment('银行名称');
             $table->timestamps();
             $table->softDeletes();
         });

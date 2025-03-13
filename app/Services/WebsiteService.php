@@ -34,8 +34,6 @@ class WebsiteService extends Service
             ->select('num', 'ip', 'date')
             ->whereBetween('date', $date)->get()->groupBy(fn($item) => $item->date->toDateString());
 
-        dump($dateNum->toArray());
-
         return collect(CarbonPeriod::create(...$date))->map(function ($date) use ($dateNum) {
             return [
                 'date' => $date->format('Y-m-d'),
