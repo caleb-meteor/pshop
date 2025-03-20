@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date')->nullable()->index('date');
             $table->string('ip')->nullable();
-            $table->integer('num');
+            $table->integer('num')->default(0);
             $table->timestamps();
         });
     }
