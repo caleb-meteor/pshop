@@ -32,9 +32,12 @@ class DatabaseSeeder extends Seeder
             )
         );
 
-        ProductView::factory(100)->create();
+        // 本地数据填充
+        if(app()->environment('local')){
+            ProductView::factory(100)->create();
 
-        WebsiteView::factory(100)->create();
-        Order::factory(100)->create();
+            WebsiteView::factory(100)->create();
+            Order::factory(100)->create();
+        }
     }
 }
